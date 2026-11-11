@@ -1,0 +1,6 @@
+# Streamlit reads this from the folder you start the app in (the project root).
+[theme]
+primaryColor = "#2a78d6"        # categorical slot 1 of the palette the maps and charts use
+
+[browser]
+gatherUsageStats = false

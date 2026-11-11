@@ -1,0 +1,69 @@
+# Reach120 settings. Paths are relative to this project folder (01-reach120) unless noted.
+
+paths:
+  # National layers (about 8.8 GB), kept outside the repo so several projects can share them.
+  # $REACH120_SHARED_DATA overrides this. `python scripts/get_data.py` fills it.
+  shared_data: ../00-shared-data
+  # Inside shared_data:
+  facilities: grid3/health-facilities/GRID3_NGA_health_facilities_v4_0.csv
+  states: grid3/boundaries/GRID3_NGA_operational_states.gpkg
+  lgas: grid3/boundaries/GRID3_NGA_operational_lgas.gpkg
+  wards: grid3/boundaries/GRID3_NGA_operational_wards_v4_0.gpkg
+  friction:
+    mixed:
+      zip: grid3/travel-time-friction/GRID3_NGA_mix_travel_time_friction_surface_v1_0.zip
+      member: GRID3_NGA_mix_travel_time_friction_surface_v1_0.tif
+    walk:
+      zip: grid3/travel-time-friction/GRID3_NGA_walk_travel_time_friction_surface_v1_0.zip
+      member: GRID3_NGA_walk_travel_time_friction_surface_v1_0.tif
+  women: worldpop/agesex/NGA_population_v3_0_agesex_f15_49.tif
+  population_total: worldpop/total/NGA_population_v3_0_gridded.tif
+  # Inside this project:
+  ontime_facilities: data/raw/ontime-cs-facilities/OnTIME_Nigeria_Masterlist_v2_20220928.csv
+  ontime_travel_times: data/raw/ontime-travel-times/s2cell_metrics_data_v1.csv
+  dhs: data/raw/dhs-2023-24
+  outputs: outputs
+
+access:
+  crs: EPSG:32632                 # the friction surface's grid: WGS 84 / UTM zone 32N
+  margin_km: 50                   # hospitals and roads beyond the state line still count
+  thresholds_min: [30, 60, 120]
+  target_min: 120                 # "within two hours"
+  snap_radius_cells: 10           # move a facility up to 300 m onto a passable cell
+  modes: [mixed, walk]            # mixed: vehicles on passable roads, walking elsewhere
+  # 30 m travel-time rasters to keep on disk: "all", or a list of "scenario/mode". They are about
+  # 20 MB each; the planner needs strict/<mode> for its exact pruning and its demand points.
+  keep_30m: all
+
+planning:
+  mode: mixed                     # default transport mode in the app and the assistant
+  modes: [mixed, walk]            # the planner runs for each
+  # Which mode the brief plans for. "auto": the one leaving more women beyond the target, so the
+  # brief plans where upgrades matter (in Kano, vehicles reach nearly everyone; walking does not).
+  brief_mode: auto
+  scenarios: [strict, base, loose]   # nested capability scenarios; see scenarios.yaml
+  block_cells: 5                  # demand points: 5 x 5 population cells, about 460 m
+  max_candidates: 250
+  phc_radius_km: 10               # one primary health centre per LGA: the best placed one
+  straight_line_radius_km: 30     # for the naive "straight-line" comparison ranking
+  default_budget_naira: 2000000000
+  sweep_points: 30
+  solver_time_limit_s: 20
+  solver_workers: 8
+
+validation:
+  osrm_url: https://router.project-osrm.org   # public demo server: occasional use only
+  osrm_pairs: 50
+  osrm_pause_s: 1.1
+
+assistant:
+  # Any OpenAI-compatible endpoint. The default is Groq's free tier. Check the model list in
+  # the provider's console: free-tier models change.
+  base_url: https://api.groq.com/openai/v1
+  model: llama-3.3-70b-versatile
+  api_key_env: [REACH120_LLM_API_KEY, GROQ_API_KEY]
+  base_url_env: REACH120_LLM_BASE_URL
+  model_env: REACH120_LLM_MODEL
+  max_tool_calls: 5
+  temperature: 0
+  timeout_s: 60

@@ -1,0 +1,38 @@
+# Which facilities count as able to do a caesarean section.
+#
+# The facility data has no surgery field, so facility type stands in for capability. Results are
+# reported under several definitions so nobody mistakes one stand-in for the truth.
+# `reach120 scorecard` scores each one against the OnTIME list of verified facilities.
+
+exclude_functional: [Not-Functional, Closed]
+
+# The scenario used for headlines and briefs. "auto" takes the scorecard's recommendation (the
+# best balance of catch rate and false inclusion against OnTIME's verified list) when it exists,
+# and falls back to "base". On the 10 Nov 2026 run the scorecard recommended "loose".
+default: auto
+
+scenarios:
+  strict:
+    label: Strict
+    description: General hospitals, federal medical centres and teaching hospitals only.
+    facility_types: [General Hospital, Federal Medical Center, Teaching/Tertiary Hospital, Teaching Hospital]
+    planner: true
+  base:
+    label: Base
+    description: Strict, plus specialist and cottage hospitals.
+    facility_types: [General Hospital, Federal Medical Center, Teaching/Tertiary Hospital, Teaching Hospital,
+                     Specialist Hospital, Cottage Hospital]
+    planner: true
+  loose:
+    label: Loose
+    description: Base, plus facilities typed plain "Hospital", which are mostly private.
+    facility_types: [General Hospital, Federal Medical Center, Teaching/Tertiary Hospital, Teaching Hospital,
+                     Specialist Hospital, Cottage Hospital, Hospital]
+    planner: true
+  base_public:
+    label: Base, public only
+    description: The base scenario restricted to public facilities. Private care is out of reach for many women.
+    facility_types: [General Hospital, Federal Medical Center, Teaching/Tertiary Hospital, Teaching Hospital,
+                     Specialist Hospital, Cottage Hospital]
+    ownership: [Public]
+    planner: false   # not nested inside the others, so the planner leaves it out

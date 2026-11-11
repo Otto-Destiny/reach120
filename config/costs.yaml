@@ -1,0 +1,24 @@
+# PLACEHOLDER COSTS. These are not estimates of anything.
+#
+# Replace them with figures from a state budget or a published costing study before using any
+# result. Every screen and brief that uses them says they are placeholders while
+# `placeholder: true`.
+
+currency: NGN
+placeholder: true
+
+# One-off cost of making a facility able to do emergency caesarean sections: theatre, blood
+# storage, equipment and the staff to run them. Running costs are not modelled.
+tiers:
+  hospital:
+    label: Hospital not yet counted as capable
+    cost_naira: 150000000
+  secondary:
+    label: Other secondary-level facility
+    cost_naira: 300000000
+  phc:
+    label: Primary health centre
+    cost_naira: 600000000
+
+# Per-facility costs that replace the tier cost. Key: the facility's GRID3 unique_id.
+overrides: {}
