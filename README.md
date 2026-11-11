@@ -92,15 +92,15 @@ A PDF for each state, built by rule from the results, for people who will never 
 
 ```mermaid
 flowchart LR
-    F["GRID3 friction surfaces<br/>30 m, read from the zip"] --> T["Travel time to the<br/>nearest capable hospital"]
-    H["GRID3 facilities<br/>3 capability definitions"] --> T
-    T --> C["Women beyond 30, 60, 120 min<br/>by ward and LGA"]
-    P["WorldPop women 15-49"] --> C
-    T --> R["What each candidate<br/>upgrade would reach"]
+    F["GRID3 friction<br/>surface, 30 m"] --> T["Travel time to<br/>capable care"]
+    H["GRID3 health<br/>facilities"] --> T
+    T --> C["Coverage by<br/>ward and LGA"]
+    P["WorldPop<br/>women 15-49"] --> C
+    T --> R["Reach of each<br/>candidate site"]
     R --> O["Budget plan<br/>OR-Tools CP-SAT"]
-    C --> A["App, brief, assistant"]
+    C --> A["App, brief,<br/>assistant"]
     O --> A
-    V["OnTIME: Google times,<br/>verified C-section list"] --> X["Validation report"]
+    V["OnTIME data:<br/>Google times,<br/>verified list"] --> X["Validation<br/>report"]
     T --> X
 ```
 
